@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+    <style>
+        body {
+            background-color: gray;
+        }
+
+        @keyframes yinyangcir {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(365deg);
+            }
+        }
+
+        .yinyang {
+            position: relative;
+            margin: 100px auto;
+            width: 200px;
+            height: 200px;
+            box-sizing: border-box;
+            border-top: 100px solid white;
+            border-bottom: 100px solid black;
+            border-radius: 50%;
+            animation-name: yinyangcir;
+            animation-duration: 20s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        .yinyang::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            width: 100px;
+            height: 100px;
+            box-sizing: border-box;
+            border: 40px solid black;
+            border-radius: 50%;
+            background-color: white;
+        }
+
+        .yinyang::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 100px;
+            width: 100px;
+            height: 100px;
+            box-sizing: border-box;
+            border: 40px solid white;
+            border-radius: 50%;
+            background-color: black;
+        }
+    </style>
+
+
+    <div class="yinyang"></div>
