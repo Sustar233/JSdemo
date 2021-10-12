@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+        }
+        #mycanvas {
+            position: relative;
+            background-color: gray;
+        }
+        .actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+        .actions > #brush {
+            display: none;
+        }
+        .actions.x > #brush {
+            display: inline-block;
+        }
+        .actions.x > #eraser {
+            display: none;
+        }
+        
+    </style>
+</head>
+<body>
+    <canvas id="mycanvas" width=300 height=300></canvas>
+    <div class="actions">
+        <button id="eraser">橡皮擦</button>
+        <button id="brush">画笔</button>
+    </div>
+
+    <script>
+        let mycanvas = document.querySelector('#mycanvas');
+        // 初始化画布
+        let ctx = mycanvas.getContext('2d');
+        // 初始化画布大小
+        resizeCanvas(mycanvas);
+        let actions = document.querySelector('.actions')
+        // 获取橡皮擦按钮
+        let eraser = document.querySelector('#eraser');
+        // 获取画笔按钮
+        let brush = document.querySelector('#brush');
+        // 初始化按钮事件
+        mouseListener(mycanvas, ctx);
+        
+        // 判断橡皮擦状态
+        let eraserflag = false;
+        eraser.addEventListener('click', function(){
+            eraserflag = true;
+            actions.className = 'actions x'
+        })
+        brush.addEventListener('click', function(e) {
+            eraserflag = false;
+            actions.className = 'actions'
+        })
+        
+        if (document.body.ontouchstart !== undefined) {
+            // 触屏设备
+            mycanvas.addEventListener('touchstart', function() {
+            console.log('qwq');
+            });
+            mycanvas.addEventListener('touchmove', function(e) {
+                console.log('动了动了');
+            });
+            mycanvas.addEventListener('touchend',function(){
+                console.log('qaq');
+            });
+        } else {
+            // 非触屏设备
+            
+                // 鼠标按下
+                mycanvas.addEventListener('mousedown', function(e){
+                    let x = e.clientX;
+                    let y = e.clientY;
+                    using = true;
+                    if (eraserflag) {
+                        ctx.clearRect(x-5, y-5, 10, 10);
+                    } else {
+                        lastPoint = {
+                            'x': x,
+                            'y': y
+                        }
+                        drawCircle(x, y, 3);
+                    }
+                });
+
+                // 鼠标按下并移动
+                mycanvas.addEventListener('mousemove', function(e) {
+                    let x = e.clientX;
+                    let y = e.clientY;
+
+                    if (!using) { return };
+
+                    if (eraserflag) {
+                        ctx.clearRect(x-5, y-5, 10, 10);
+                    } else {
+                        let newPoint = {
+                            'x': x,
+                            'y': y
+                        };
+                        drawCircle(x, y, 3);
+                        drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+                        lastPoint = newPoint;
+                    }
+                });
+                // 鼠标松开
+                mycanvas.addEventListener('mouseup', function(e){
+                    using = false;
+                });
+            
+        }
+
+        function mouseListener(canvas, ctx) {            
+            // 判断鼠标状态，按下且移动时为true
+            let using = false;
+            
+            let lastPoint = {
+                x: undefined,
+                y: undefined
+            };
+        }
+
+        // 鼠标按下时画点
+        function drawCircle(x,  y, radius) {
+            ctx.beginPath();
+            ctx.fillStyle = 'black';
+            ctx.arc(x, y, radius, 0, Math.PI*2);
+            ctx.fill();
+        }
+        // 画线
+        function drawLine(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.fillStyle = 'black';
+            ctx.moveTo(x1, y1); // 起点
+            ctx.lineWidth = 5;
+            ctx.lineTo(x2, y2); // 终点
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        // 设置canvas大小
+        function resizeCanvas(canvas) {
+            function resizeCan() {
+                let pageWidth = document.documentElement.clientWidth;
+                let pageHeight = document.documentElement.clientHeight;
+                canvas.width = pageWidth;
+                canvas.height = pageHeight;
+            }
+            resizeCan();
+            window.addEventListener('resize', function() {
+                resizeCan();
+            })
+        }
+
+        
+
+    </script>
+</body>
+</html>
